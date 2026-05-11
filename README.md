@@ -26,12 +26,10 @@ The following examples are based on assumed calendars `Work` and `Family`.
 2. Save the changes and run the `onCalendarCleanup` function manually.
 
     - Allow the prompt and grant the requested calendar access.
-    - At the first run, all events ending more than 30 days ago will be permanently deleted.
 
 3. On the left menu, select "Triggers" and add a new trigger:
 
     - Choose which function to run: `onCalendarCleanup`
-    - Choose which deployment should run: `Head`
     - Select event source: `Time-driven`
     - Select type of time based trigger: `Day timer`
     - Select time of day: e.g. `Midnight to 1am`
@@ -39,7 +37,7 @@ The following examples are based on assumed calendars `Work` and `Family`.
 Now, the script will run automatically every day and delete old events from the `Work` calendar.
 
 ### Multiple Calendars
-If you want to clean up multiple calendars, simply call the function multiple times or configure multiple triggers.
+If you want to clean up multiple calendars, simply call the function multiple times.
 
 ```js
 function onCalendarCleanup() {
@@ -76,9 +74,6 @@ function onCalendarCleanup() {
   runCleanup('Work', startOfYear(1))
 }
 ```
-
-## Details
-**Recurring Events:** Recurring event series are safely preserved if they have any occurrences on or after the cutoff date. This ensures no future events or past exceptions of an ongoing series are accidentally modified or deleted. However, if a recurring event series has completely ended in the past (no occurrences on or after the cutoff date), the entire series is deleted.
 
 ## Update
 To update the script version, replace the `Code.gs` file content with [this code](https://raw.githubusercontent.com/scriptPilot/google-calendar-cleanup/main/dist/Code.gs).
