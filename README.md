@@ -1,6 +1,6 @@
 # Google Calendar Cleanup
 
-Clean up past Google Calendar events on a regular basis to keep your calendar tidy and save storage.
+Clean up past Google Calendar events on a regular basis to keep your calendar tidy.
 
 Made with Google Apps Script, related to [Google Calendar Correction](https://github.com/scriptPilot/google-calendar-correction).
 
