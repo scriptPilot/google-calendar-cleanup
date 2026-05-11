@@ -136,6 +136,8 @@ function runCleanup(calendarName, cutoffDate) {
           } catch (error) {
             if (error.details && error.details.code === 410) {
               console.info(`Already deleted ${eventType}: "${event.summary || 'Untitled'}" (ended on ${endDate.toISOString()})`)
+            } else if (error.details && error.details.code === 400 && error.details.message && error.details.message.includes('not valid for this event type')) {
+              console.info(`Skipped special event type: "${event.summary || 'Untitled'}"`)
             } else {
               console.error(`Failed to delete event: "${event.summary || 'Untitled'}"`, error)
             }
@@ -156,7 +158,11 @@ function runCleanup(calendarName, cutoffDate) {
             console.info(`Trimmed ${eventType}: "${event.summary || 'Untitled'}" (new start: ${patchObj.start.date || patchObj.start.dateTime})`)
             trimmedCount++
           } catch (error) {
-            console.error(`Failed to trim event: "${event.summary || 'Untitled'}"`, error)
+            if (error.details && error.details.code === 400 && error.details.message && error.details.message.includes('not valid for this event type')) {
+              console.info(`Skipped special event type: "${event.summary || 'Untitled'}"`)
+            } else {
+              console.error(`Failed to trim event: "${event.summary || 'Untitled'}"`, error)
+            }
           }
         }
       })
