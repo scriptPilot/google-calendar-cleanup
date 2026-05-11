@@ -1,0 +1,8 @@
+# System
+.DS_Store
+
+# CLASP
+.clasp.json
+
+# onCalendarCleanup.js
+onCalendarCleanup.js
