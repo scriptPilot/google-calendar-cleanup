@@ -139,7 +139,7 @@ function runCleanup(calendarName, cutoffDate) {
           // Event crosses the cutoff date. Trim its start time.
           try {
             const isAllDay = !!event.start.date;
-            const patchObj = {};
+            const patchObj = { end: event.end }; // Explicitly keep the original end date to prevent auto-shifting
             if (isAllDay) {
               const dateStr = targetDate.getFullYear() + '-' + String(targetDate.getMonth()+1).padStart(2, '0') + '-' + String(targetDate.getDate()).padStart(2, '0');
               patchObj.start = { date: dateStr };
