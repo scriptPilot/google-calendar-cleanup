@@ -81,5 +81,9 @@ To update the script version, replace the `Code.gs` file content with [this code
 ## Deinstallation
 Remove the Google Apps Script project. This will also remove all triggers.
 
+## Details
+- **Recurring Events:** Recurring events are expanded into individual sessions, meaning past sessions are safely deleted without affecting future sessions.
+- **Event Trimming:** Events that start before but end after the cutoff date are not deleted. Instead, their start time is trimmed to the cutoff date, ensuring a clean past calendar.
+
 ## Support
 Feel free to open an [issue](https://github.com/scriptPilot/google-calendar-cleanup/issues) for bugs, feature requests or any other question.
