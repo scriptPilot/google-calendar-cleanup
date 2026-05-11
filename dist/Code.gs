@@ -73,6 +73,8 @@ function runCleanup(calendarName, cutoffDate) {
   })
   if (!calendar) throw new Error(`Calendar ${calendarName} not found.`)
 
+  const timeZone = calendar.timeZone || Session.getScriptTimeZone();
+
   // Calculate cutoff date based on parameter
   let targetDate = cutoffDate
   if (Number.isInteger(targetDate)) {
@@ -84,6 +86,11 @@ function runCleanup(calendarName, cutoffDate) {
   } else if (!(targetDate instanceof Date)) {
     targetDate = new Date(targetDate)
   }
+
+  // Align targetDate to midnight in the calendar's timezone
+  const tzFormatted = Utilities.formatDate(targetDate, timeZone, "yyyy-MM-dd'T'00:00:00");
+  const tzOffset = Utilities.formatDate(targetDate, timeZone, "Z"); // e.g. "+0200"
+  targetDate = new Date(`${tzFormatted}${tzOffset.substr(0,3)}:${tzOffset.substr(3,2)}`);
   
   // Get events older than cutoff
   let deletedCount = 0
@@ -113,8 +120,9 @@ function runCleanup(calendarName, cutoffDate) {
 
         if (!event.start || !event.end) return;
 
-        const startDate = event.start.dateTime ? new Date(event.start.dateTime) : new Date(event.start.date)
-        const endDate = event.end.dateTime ? new Date(event.end.dateTime) : new Date(event.end.date)
+        const parseAllDay = (dStr) => new Date(`${dStr}T00:00:00${tzOffset.substr(0,3)}:${tzOffset.substr(3,2)}`);
+        const startDate = event.start.dateTime ? new Date(event.start.dateTime) : parseAllDay(event.start.date)
+        const endDate = event.end.dateTime ? new Date(event.end.dateTime) : parseAllDay(event.end.date)
         
         if (startDate >= targetDate) return;
 
@@ -141,8 +149,7 @@ function runCleanup(calendarName, cutoffDate) {
             const isAllDay = !!event.start.date;
             const patchObj = { end: event.end }; // Explicitly keep the original end date to prevent auto-shifting
             if (isAllDay) {
-              const dateStr = targetDate.getFullYear() + '-' + String(targetDate.getMonth()+1).padStart(2, '0') + '-' + String(targetDate.getDate()).padStart(2, '0');
-              patchObj.start = { date: dateStr };
+              patchObj.start = { date: Utilities.formatDate(targetDate, timeZone, "yyyy-MM-dd") };
             } else {
               patchObj.start = { dateTime: targetDate.toISOString() };
             }
